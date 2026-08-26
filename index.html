@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>છોટાઉદેપુર મહેસૂલ કર્મચારી ચૂંટણી ૨૦ injection</title>
-    <!-- સત્તાવાર અને સૌથી મજબૂત Firebase SDK લાઈબ્રેરીઓ -->
+    <title>છોટાઉદેપુર મહેસૂલ કર્મચારી ચૂંટણી ૨૦૨૬</title>
+    <!-- સત્તાવાર અને મજબૂત Firebase SDK લાઈબ્રેરીઓ -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <style>
@@ -18,24 +18,31 @@
         .btn:hover { background-color: #27ae60; }
         .result-box { margin-top: 20px; padding: 20px; background: #d4edda; color: #155724; border-radius: 8px; display: none; font-size: 22px; font-weight: bold; }
         .vote-radio { transform: scale(1.6); margin-right: 15px; vertical-align: middle; }
+        
+        /* વોટ સબમિટ થયા પછીનું સ્પેશિયલ સક્સેસ બોક્સ */
         .success-box { display: none; padding: 30px 10px; background: #ffffff; text-align: center; }
-        .checkmark { font-size: 75px; color: #2ecc71; margin-bottom: 15px; }
+        .checkmark { font-size: 85px; color: #2ecc71; margin-bottom: 15px; animation: pop 0.4s ease-in-out; }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        
+        /* વોટની નીચે જ આપેલું એડમિન લોગીન બોક્સ */
+        .login-box { margin-top: 40px; padding: 20px; background: #eaeded; border-radius: 8px; border: 1px solid #ccc; text-align: left; }
+        .login-box input { width: 93%; padding: 10px; margin: 10px 0; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; background: white; color: #333; }
+        .login-box button { background: #34495e; color: white; border: none; padding: 10px 20px; font-size: 15px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; }
+        .login-box button:hover { background: #2c3e50; }
         
         /* ગુપ્ત એડમિન સેક્શન ની ડિઝાઇન */
-        .admin-section { display: none; background: #2c3e50; color: white; border-radius: 10px; padding: 25px; text-align: left; margin-top: 40px; }
-        .admin-btn { color: white; border: none; padding: 10px 15px; font-size: 14px; border-radius: 4px; cursor: pointer; margin: 5px; width: 98%; }
-        .login-box { margin-top: 50px; opacity: 0.3; font-size: 12px; }
-        .login-box:hover { opacity: 1; }
+        .admin-section { display: none; background: #2c3e50; color: white; border-radius: 10px; padding: 25px; text-align: left; margin-top: 20px; }
+        .admin-btn { color: white; border: none; padding: 12px; font-size: 15px; border-radius: 4px; cursor: pointer; margin: 8px 0; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<!-- 🗳️ કર્મચારીઓ (Voters) માટેનો મુખ્ય એરિયા -->
-<div class="container" id="main-voter-card">
+<div class="container">
     <h1>છોટાઉદેપુર મહેસૂલ કર્મચારી મંડળ</h1>
     <h2>પ્રમુખ પદની ચૂંટણી ૨૦૨૬</h2>
     <hr style="border-color: #eee;">
     
+    <!-- 🗳️ વોટિંગ ફોર્મ એરિયા -->
     <div id="voting-area">
         <h3 style="color: #34495e;">કૃપા કરીને તમારો કિંમતી વોટ આપો:</h3>
         <form id="electionForm" onsubmit="submitVote(event)">
@@ -51,59 +58,59 @@
         </form>
     </div>
 
-    <!-- વોટ સબમિટ થયા પછી દેખાતું લીલું ખરાનું ✅ નિશાન -->
+    <!-- ✅ વોટ સબમિટ થયા પછી દેખાતું નિશાન -->
     <div id="success-message" class="success-box">
         <div class="checkmark">✅</div>
         <h2 style="color: #2ecc71; margin-top: 0;">વોટ સફળતાપૂર્વક સબમિટ થઈ ગયો છે!</h2>
         <p style="color: #555; font-size: 17px;">ચૂંટણી પ્રક્રિયામાં ભાગ લેવા બદલ આપનો ખૂબ ખૂબ ધન્યવાદ.</p>
     </div>
 
-    <!-- ફાઇનલ પરિણામ બોક્સ -->
+    <!-- 🏆 ફાઇનલ પરિણામ બોક્સ -->
     <div id="final-result" class="result-box">
         🎉 ચૂંટણીનું અંતિમ પરિણામ 🎉
         <hr style="border-color: #c3e6cb; margin: 15px 0;">
         <div id="winner-text"></div>
     </div>
 
-    <!-- એડમિન લોગીન માટે એકદમ નાનું અને અસ્પષ્ટ બટન (છુપાયેલું) -->
-    <div class="login-box">
-        <button onclick="loginAdminUI()" style="background:none; border:none; color:#bdc3c7; cursor:pointer;">🔒 કંટ્રોલ પેનલ</button>
+    <!-- 🔒 વોટની નીચે જ આપેલું એડમિન લોગીન ફોર્મ -->
+    <div class="login-box" id="admin-login-ui">
+        <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
+        <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
+        <button onclick="checkAdminPassword()">લોગઇન કરો</button>
     </div>
 </div>
 
-<!-- ⚙️ ગુપ્ત એડમિન કંટ્રોલ પેનલ (પાસવર્ડ વગર કોઈને નહીં દેખાય) -->
+<!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ (લોગઇન કર્યા પછી જ ખુલશે) -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
-    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (ફક્ત એડમિન માટે):</strong></p>
+    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (રીઅલ-ટાઇમ):</strong></p>
     <div style="background: #34495e; padding: 15px; border-radius: 6px; font-size: 18px; margin-bottom: 15px;">
-        • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 22px;">0</span><br><br>
-        • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 22px;">0</span>
+        • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span><br><br>
+        • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span>
     </div>
 
-    <p><strong>🔄 ભૂલ સુધારણા પાવર (Change Vote):</strong></p>
-    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('hitesh', 'vishnu')">૧ વોટ હિતેશ માંથી વિષ્ણુ ને આપો</button>
-    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('vishnu', 'hitesh')">૧ વોટ વિષ્ણુ માંથી હિતેશ ને આપો</button>
+    <p style="font-weight: bold; color: #ecf0f1;">🔄 ભૂલ સુધારણા પાવર (Change Vote):</p>
+    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('hitesh', 'vishnu')">૧ વોટ હિતેશ માંથી વિષ્ણુ ને ટ્રાન્સફર કરો</button>
+    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('vishnu', 'hitesh')">૧ વોટ વિષ્ણુ માંથી હિતેશ ને ટ્રાન્સફર કરો</button>
     
     <hr style="border-color: #34495e; margin: 20px 0;">
-    <button class="admin-btn" style="background: #2ecc71; font-weight: bold; padding: 12px;" onclick="declareFinalResult()">અંતિમ પરિણામ જાહેર કરો</button>
-    <button class="admin-btn" style="background: #e74c3c; padding: 8px; margin-top: 10px;" onclick="resetWholeElection()">આખી ચૂંટણી રીસેટ કરો (0-0)</button>
+    <button class="admin-btn" style="background: #2ecc71; font-weight: bold; padding: 14px;" onclick="declareFinalResult()">અંતિમ પરિણામ જાહેર કરો (Live Result)</button>
+    <button class="admin-btn" style="background: #e74c3c; padding: 10px; margin-top: 10px;" onclick="resetWholeElection()">આખી ચૂંટણી રીસેટ કરો (0-0)</button>
 </div>
 
 <script>
-    // ફાયરબેઝ ઓનલાઈન કનેક્શન
+    // ફાયરબેઝ સેટઅપ
     const firebaseConfig = { databaseURL: "https://firebaseio.com" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const MASTER_PASS = "admin123"; // એડમિન પાસવર્ડ
+    const MASTER_PASS = "admin123"; // તમારો પાસવર્ડ
     let currentVotes = { hitesh: 0, vishnu: 0 };
     let resultFlag = false;
 
     // રિયલ-ટાઇમમાં ઓટોમેટિક ડેટાબેઝ ટ્રેક કરવો
     db.ref().on('value', (snapshot) => {
         const data = snapshot.val();
-        
-        // જો ડેટાબેઝ તદ્દન ખાલી હોય તો ઓટોમેટિક સ્ટાર્ટ થશે
         if (!data) {
             db.ref().set({ votes: { hitesh: 0, vishnu: 0 }, isResultDeclared: false });
             return;
@@ -112,11 +119,10 @@
         currentVotes = data.votes || { hitesh: 0, vishnu: 0 };
         resultFlag = data.isResultDeclared || false;
 
-        // એડમિન સ્ક્રીન પર લાઈવ અંકો અપડેટ કરો
         document.getElementById('adm-hitesh').innerText = currentVotes.hitesh;
         document.getElementById('adm-vishnu').innerText = currentVotes.vishnu;
 
-        // જો આ ફોનમાંથી વોટ અપાઈ ગયો હોય
+        // જો યુઝરે વોટ આપી દીધો હોય
         if (localStorage.getItem('vote_done') === 'true' && !resultFlag) {
             document.getElementById('voting-area').style.display = "none";
             document.getElementById('success-message').style.display = "block";
@@ -128,26 +134,26 @@
             if(currentVotes.hitesh > currentVotes.vishnu) {
                 winText = `🏆 વિજેતા: હિતેશ રાઠવા<br><span style="font-size:16px; color:#666;">કુલ વોટ: ${currentVotes.hitesh} (વિષ્ણુ દેસાઈ: ${currentVotes.vishnu})</span>`;
             } else if(currentVotes.vishnu > currentVotes.hitesh) {
-                winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ<br><span style="font-size:16px; color:#666;">કુલ વોટ: ${currentVotes.vishnu} (ஹિતેશ રાઠવા: ${currentVotes.hitesh})</span>`;
+                winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ<br><span style="font-size:16px; color:#666;">કુલ વોટ: ${currentVotes.vishnu} (હિતેશ રાઠવા: ${currentVotes.hitesh})</span>`;
             } else {
-                winText = `🤝 ચૂંટણી ટાઈ (સરખા વોટ): બંને ઉમેદવારોને ${currentVotes.hitesh} વોટ મળ્યા છે.`;
+                winText = `🤝 ચૂંટણી ટાઈ: બંને ઉમેદવારોને સરખા ${currentVotes.hitesh} વોટ મળ્યા છે.`;
             }
             document.getElementById('winner-text').innerHTML = winText;
             document.getElementById('final-result').style.display = 'block';
             document.getElementById('voting-area').style.display = 'none';
             document.getElementById('success-message').style.display = "none";
+            document.getElementById('admin-login-ui').style.display = "none";
         }
     });
 
-    // વોટ સબમિટ કરવાનું ઓફિશિયલ સેફ ફંક્શન
+    // વોટ સબમિટ કરવાનું ફંક્શન
     function submitVote(event) {
         event.preventDefault();
-        if (localStorage.getItem('vote_done') === 'true') { alert("તમે ઓલરેડી એકવાર વોટ આપી દીધો છે!"); return; }
-        if (resultFlag) { alert("ચૂંટણી પૂરી થઈ ગઈ છે!"); return; }
+        if (localStorage.getItem('vote_done') === 'true') { alert("તમે આ ફોનમાંથી એકવાર વોટ આપી દીધો છે!"); return; }
+        if (resultFlag) { alert("ચૂંટણી પૂર્ણ થઈ ગઈ છે!"); return; }
 
         const selected = document.querySelector('input[name="candidate"]:checked').value;
 
-        // Firebase Transaction દ્વારા ડેટાબેઝમાં +1 કરવો
         db.ref('votes/' + selected).transaction((count) => {
             return (count || 0) + 1;
         }, (error, committed) => {
@@ -156,36 +162,13 @@
                 document.getElementById('voting-area').style.display = "none";
                 document.getElementById('success-message').style.display = "block";
             } else {
-                alert("નેટવર્ક ધીમું છે! કૃપા કરીને ફરી સબમિટ કરો.");
+                alert("ભૂલ: વોટ સબમિટ ન થયો. ફરી ટ્રાય કરો.");
             }
         });
     }
 
-    // ગુપ્ત એડમિન લોગીન
-    function loginAdminUI() {
-        let p = prompt("એડમિન માસ્ટર પાસવર્ડ નાખો:");
-        if (p === MASTER_PASS) {
+    // એડમિન લોગીન ચેક કરવાનો પાવર
+    function checkAdminPassword() {
+        let enteredPass = document.getElementById('passInput').value;
+        if (enteredPass === MASTER_PASS) {
             document.getElementById('admin-panel-ui').style.display = "block";
-            window.scrollTo(0, document.body.scrollHeight);
-            alert("એડમિન પેનલ ઓપન થઈ ગઈ છે, પેજની નીચે જુઓ!");
-        } else {
-            alert("ખોટો પાસવર્ડ!");
-        }
-    }
-
-    // એડમિન પાવર: વોટ અદલા-બદલી
-    function modifyVote(from, to) {
-        if (currentVotes[from] > 0) {
-            db.ref('votes').update({ [from]: currentVotes[from] - 1, [to]: currentVotes[to] + 1 });
-        } else {
-            alert("આ ઉમેદવાર પાસે કોઈ વોટ નથી જેને કાપી શકાય!");
-        }
-    }
-
-    // એડમિન પાવર: પરિણામ જાહેર કરવું
-    function declareFinalResult() {
-        if (confirm("શું તમે ફાઇનલ પરિણામ જાહેર કરવા માંગો છો? આનાથી બધા જ વોટર્સના ફોનમાં લાઈવ રિઝલ્ટ દેખાશે.")) {
-            db.ref().update({ isResultDeclared: true });
-        }
-    }
-
