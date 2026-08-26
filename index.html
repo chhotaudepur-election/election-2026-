@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>છોટાઉદેપુર મહેસૂલ કર્મચારી ચૂંટણી ૨૦૨૬</title>
-    <!-- સત્તાવાર અને સૌથી મજબૂત Firebase SDK લાઈબ્રેરીઓ -->
+    <!-- સત્તાવાર Firebase SDK લાઈબ્રેરીઓ -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <style>
@@ -19,17 +19,16 @@
         .result-box { margin-top: 20px; padding: 20px; background: #d4edda; color: #155724; border-radius: 8px; display: none; font-size: 22px; font-weight: bold; }
         .vote-radio { transform: scale(1.6); margin-right: 15px; vertical-align: middle; }
         
-        /* વોટ સબમિટ થયા પછીનું સ્પેશિયલ સક્સેસ બોક્સ */
+        /* વોટ સબમિટ થયા પછીનું ગ્રીન ડન બોક્સ */
         .success-box { display: none; padding: 30px 10px; background: #ffffff; text-align: center; }
         .checkmark { font-size: 85px; color: #2ecc71; margin-bottom: 15px; }
         
-        /* વોટની નીચે જ આપેલું એડમિન લોગીન બોક્સ */
+        /* એડમિન લોગીન ઇનપુટ બોક્સ */
         .login-box { margin-top: 40px; padding: 20px; background: #eaeded; border-radius: 8px; border: 1px solid #ccc; text-align: left; }
         .login-box input { width: 93%; padding: 10px; margin: 10px 0; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; background: white; color: #333; box-sizing: border-box; }
         .login-box button { background: #34495e; color: white; border: none; padding: 10px 20px; font-size: 15px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; }
-        .login-box button:hover { background: #2c3e50; }
         
-        /* ગુપ્ત એડમિન સેક્શન ની ડિઝાઇન */
+        /* ગુપ્ત એડમિન કંટ્રોલ પેનલ */
         .admin-section { display: none; background: #2c3e50; color: white; border-radius: 10px; padding: 25px; text-align: left; margin-top: 20px; }
         .admin-btn { color: white; border: none; padding: 12px; font-size: 15px; border-radius: 4px; cursor: pointer; margin: 8px 0; width: 100%; font-weight: bold; }
     </style>
@@ -41,7 +40,7 @@
     <h2>પ્રમુખ પદની ચૂંટણી ૨૦૨૬</h2>
     <hr style="border-color: #eee;">
     
-    <!-- 🗳️ વોટિંગ ફોર્મ એરિયા -->
+    <!-- 🗳️ વોટિંગ એરિયા -->
     <div id="voting-area">
         <h3 style="color: #34495e;">કૃપા કરીને તમારો કિંમતી વોટ આપો:</h3>
         <form id="electionForm" onsubmit="submitVote(event)">
@@ -57,7 +56,7 @@
         </form>
     </div>
 
-    <!-- ✅ વોટ સબમિટ થયા પછી દેખાતું નિશાન -->
+    <!-- ✅ વોટ સબમિટ થયા પછીનું ગ્રીન ચેકમાર્ક નિશાન -->
     <div id="success-message" class="success-box">
         <div class="checkmark">✅</div>
         <h2 style="color: #2ecc71; margin-top: 0;">વોટ સફળતાપૂર્વક સબમિટ થઈ ગયો છે!</h2>
@@ -71,7 +70,7 @@
         <div id="winner-text"></div>
     </div>
 
-    <!-- 🔒 વોટની નીચે જ આપેલું એડમિન લોગીન ફોર્મ -->
+    <!-- 🔒 એડમિન લોગીન ફોર્મ (વોટર્સ ની નીચે) -->
     <div class="login-box" id="admin-login-ui">
         <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
         <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
@@ -79,7 +78,7 @@
     </div>
 </div>
 
-<!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ -->
+<!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ (બિલ્કુલ અટકશે નહીં, ઓપન થશે જ) -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
     <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (રીઅલ-ટાઇમ):</strong></p>
@@ -103,11 +102,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const MASTER_PASS = "admin123"; 
+    const MASTER_PASS = "admin123"; // માસ્ટર પાસવર્ડ
     let currentVotes = { hitesh: 0, vishnu: 0 };
     let resultFlag = false;
 
-    // રિયલ-ટાઇમ ડેટા ટ્રેકિંગ
+    // રિયલ-ટાઇમ ઓનલાઈન કનેક્શન
     db.ref().on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -125,9 +124,9 @@
             if (resultFlag) {
                 let winText = "";
                 if(currentVotes.hitesh > currentVotes.vishnu) {
-                    winText = `🏆 વિજેતા: હિતેશ રાઠવા<br><span style="font-size:16px; color:#666;">કુલ વોટ: ${currentVotes.hitesh}</span>`;
+                    winText = `🏆 વિજેતા: હિતેશ રાઠવા (કુલ વોટ: ${currentVotes.hitesh})`;
                 } else if(currentVotes.vishnu > currentVotes.hitesh) {
-                    winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ<br><span style="font-size:16px; color:#666;">કુલ વોટ: ${currentVotes.vishnu}</span>`;
+                    winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${currentVotes.vishnu})`;
                 } else {
                     winText = `🤝 ચૂંટણી ટાઈ થઈ છે.`;
                 }
@@ -136,18 +135,20 @@
                 document.getElementById('voting-area').style.display = 'none';
                 document.getElementById('success-message').style.display = "none";
                 document.getElementById('admin-login-ui').style.display = "none";
+                document.getElementById('admin-panel-ui').style.display = "none";
             }
         }
     });
 
-    // પાસવર્ડ ચેક કરવાનું બુલેટપ્રૂફ ફંક્શન (ડેટાબેઝની એરરથી બિલકુલ અટકશે નહીં)
+    // 🔒 સુપર પાવર લોગઇન ફંક્શન - ૧૦૦% ખુલશે જ!
     function checkAdminPassword() {
         let enteredPass = document.getElementById('passInput').value;
         if (enteredPass === MASTER_PASS) {
+            // ફાયરબેઝ ઓનલાઈન ડેટા આવે કે ન આવે, લોકલ પેનલ તરત જ ઓપન થઈ જશે!
             document.getElementById('admin-panel-ui').style.display = "block";
             document.getElementById('admin-login-ui').style.display = "none";
             
-            // લોગઇન થતાની સાથે જ જો ડેટાબેઝ ખાલી હોય તો ઓટોમેટિકલી શરૂ કરી દેશે
+            // જો ફાયરબેઝ તદ્દન ખાલી હોય તો ઓટોમેટિકલી શરૂ કરી દેશે
             db.ref().once('value', (snapshot) => {
                 if(!snapshot.val()) {
                     db.ref().set({ votes: { hitesh: 0, vishnu: 0 }, isResultDeclared: false });
@@ -155,7 +156,7 @@
             });
             
             window.scrollTo(0, document.body.scrollHeight);
-            alert("એડમિન પેનલ ઓપન થઈ ગઈ છે! નીચે જુઓ.");
+            alert("એડમિન કંટ્રોલ પેનલ ઓપન થઈ ગઈ છે! કૃપા કરીને પેજની નીચે જુઓ.");
         } else {
             alert("ખોટો પાસવર્ડ! ફરીથી પ્રયત્ન કરો.");
         }
