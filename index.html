@@ -68,7 +68,7 @@
         <div id="winner-text"></div>
     </div>
 
-    <!-- 🔒 એડમિન લોગીન ફોર્મ -->
+    <!-- 🔒 એડમિન લોગીન ફોર્મ (વોટર્સ ની નીચે) -->
     <div class="login-box" id="admin-login-ui">
         <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
         <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
@@ -79,7 +79,7 @@
 <!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
-    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (ઇન્સ્ટન્ટ લોડ):</strong></p>
+    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર:</strong></p>
     <div style="background: #34495e; padding: 15px; border-radius: 6px; font-size: 18px; margin-bottom: 15px;">
         • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span><br><br>
         • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span>
@@ -95,13 +95,12 @@
 </div>
 
 <script>
-    // અલ્ટ્રા-સ્ટેબલ લોકલ ડેટાબેઝ એન્જિન (ફાયરબેઝ વગર પણ ૧૦૦% કામ કરશે)
+    // અલ્ટ્રા-સ્ટેબલ લોકલ સ્ટોરેજ એન્જિન
     let state = {
         votes: { hitesh: 0, vishnu: 0 },
         isDeclared: false
     };
 
-    // લોકલ ડેટા લોડ કરવો
     function loadSavedState() {
         let savedVotes = localStorage.getItem('chhota_v');
         let savedDeclared = localStorage.getItem('chhota_d');
@@ -144,7 +143,7 @@
         }
     }
 
-    // 🔒 ૧૦૦% ગેરેંટીડ ડાયરેક્ટ લોગઇન ફંક્શન
+    // 🔒 ઇન્સ્ટન્ટ કંટ્રોલ પેનલ ઓપનર
     function checkAdminPasswordDirect() {
         let entered = document.getElementById('passInput').value;
         if (entered === "admin123") {
@@ -156,7 +155,7 @@
         }
     }
 
-    // 🗳️ ઇન્સ્ટન્ટ વોટ સબમિટ ફંક્શન
+    // 🗳️ ઇન્સ્ટન્ટ વોટ સબમિટ અને ✅ પ્રદર્શન
     function submitVoteDirect() {
         if (localStorage.getItem('user_voted') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
         if (state.isDeclared) { alert("ચૂંટણી પૂર્ણ થઈ ગઈ છે!"); return; }
@@ -181,9 +180,11 @@
             state.votes[to]++;
             saveState();
             updateScreen();
-            alert("વોટ બદલવામાં આવ્યો છે!");
+            alert("વોટ સફળતાપૂર્વક બદલવામાં આવ્યો છે!");
         } else { alert("આ ઉમેદવાર પાસે કોઈ વોટ નથી."); }
     }
 
     function declareFinalResultDirect() {
-        if (confirm("પરિણામ જાહેર કરવું છે?")) {
+        if (confirm("શું તમે પરિણામ જાહેર કરવા માંગો છો? આનાથી વોટિંગ કાયમ માટે બંધ થઈ જશે.")) {
+            state.isDeclared = true;
+            saveState();
