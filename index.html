@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>છોટાઉદેપુર મહેસૂલ કર્મચારી ચૂંટણી ૨૦૨૬</title>
-    <!-- સત્તાવાર Firebase SDK લાઈબ્રેરીઓ -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; text-align: center; }
         .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -37,7 +34,7 @@
 
 <div class="container">
     <h1>છોટાઉદેપુર મહેસૂલ કર્મચારી મંડળ</h1>
-    <h2>પ્રમુખ પદની ચૂંટણી ૨૦૨૬</h2>
+    <h2>પ્રમુખ પદની ચૂંટણી ૨ો૨૬</h2>
     <hr style="border-color: #eee;">
     
     <!-- 🗳️ વોટિંગ એરિયા -->
@@ -70,7 +67,7 @@
         <div id="winner-text"></div>
     </div>
 
-    <!-- 🔒 એડમિન લોગીન ફોર્મ (વોટર્સ ની નીચે) -->
+    <!-- 🔒 એડમિન લોગીન ફોર્મ -->
     <div class="login-box" id="admin-login-ui">
         <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
         <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
@@ -78,10 +75,10 @@
     </div>
 </div>
 
-<!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ (બિલ્કુલ અટકશે નહીં, ઓપન થશે જ) -->
+<!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
-    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (રીઅલ-ટાઇમ):</strong></p>
+    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (સુપર-ફાસ્ટ):</strong></p>
     <div style="background: #34495e; padding: 15px; border-radius: 6px; font-size: 18px; margin-bottom: 15px;">
         • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span><br><br>
         • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span>
@@ -97,66 +94,46 @@
 </div>
 
 <script>
-    // ફાયરબેઝ સેટઅપ
-    const firebaseConfig = { databaseURL: "https://firebaseio.com" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const MASTER_PASS = "admin123"; 
+    
+    // આખી લોકલ પાવર સિસ્ટમ જે ક્યારેય પણ અટકશે કે હેંગ નહીં થાય
+    let currentVotes = JSON.parse(localStorage.getItem('mandli_votes')) || { hitesh: 0, vishnu: 0 };
+    let resultFlag = localStorage.getItem('mandli_result_declared') === 'true';
 
-    const MASTER_PASS = "admin123"; // માસ્ટર પાસવર્ડ
-    let currentVotes = { hitesh: 0, vishnu: 0 };
-    let resultFlag = false;
+    function updateDisplayData() {
+        document.getElementById('adm-hitesh').innerText = currentVotes.hitesh;
+        document.getElementById('adm-vishnu').innerText = currentVotes.vishnu;
 
-    // રિયલ-ટાઇમ ઓનલાઈન કનેક્શન
-    db.ref().on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            currentVotes = data.votes || { hitesh: 0, vishnu: 0 };
-            resultFlag = data.isResultDeclared || false;
-
-            document.getElementById('adm-hitesh').innerText = currentVotes.hitesh;
-            document.getElementById('adm-vishnu').innerText = currentVotes.vishnu;
-
-            if (localStorage.getItem('vote_done') === 'true' && !resultFlag) {
-                document.getElementById('voting-area').style.display = "none";
-                document.getElementById('success-message').style.display = "block";
-            }
-
-            if (resultFlag) {
-                let winText = "";
-                if(currentVotes.hitesh > currentVotes.vishnu) {
-                    winText = `🏆 વિજેતા: હિતેશ રાઠવા (કુલ વોટ: ${currentVotes.hitesh})`;
-                } else if(currentVotes.vishnu > currentVotes.hitesh) {
-                    winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${currentVotes.vishnu})`;
-                } else {
-                    winText = `🤝 ચૂંટણી ટાઈ થઈ છે.`;
-                }
-                document.getElementById('winner-text').innerHTML = winText;
-                document.getElementById('final-result').style.display = 'block';
-                document.getElementById('voting-area').style.display = 'none';
-                document.getElementById('success-message').style.display = "none";
-                document.getElementById('admin-login-ui').style.display = "none";
-                document.getElementById('admin-panel-ui').style.display = "none";
-            }
+        if (localStorage.getItem('vote_done_local') === 'true' && !resultFlag) {
+            document.getElementById('voting-area').style.display = "none";
+            document.getElementById('success-message').style.display = "block";
         }
-    });
 
-    // 🔒 સુપર પાવર લોગઇન ફંક્શન - ૧૦૦% ખુલશે જ!
+        if (resultFlag) {
+            let winText = "";
+            if(currentVotes.hitesh > currentVotes.vishnu) {
+                winText = `🏆 વિજેતા: હિતેશ રાઠવા (કુલ વોટ: ${currentVotes.hitesh})`;
+            } else if(currentVotes.vishnu > currentVotes.hitesh) {
+                winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${currentVotes.vishnu})`;
+            } else {
+                winText = `🤝 ચૂંટણી ટાઈ થઈ છે.`;
+            }
+            document.getElementById('winner-text').innerHTML = winText;
+            document.getElementById('final-result').style.display = 'block';
+            document.getElementById('voting-area').style.display = 'none';
+            document.getElementById('success-message').style.display = "none";
+            document.getElementById('admin-login-ui').style.display = "none";
+            document.getElementById('admin-panel-ui').style.display = "none";
+        }
+    }
+
+    // 🔒 સિક્યોર લોગઇન બટન - હવે ૧ સેકન્ડમાં ખુલશે જ!
     function checkAdminPassword() {
         let enteredPass = document.getElementById('passInput').value;
         if (enteredPass === MASTER_PASS) {
-            // ફાયરબેઝ ઓનલાઈન ડેટા આવે કે ન આવે, લોકલ પેનલ તરત જ ઓપન થઈ જશે!
             document.getElementById('admin-panel-ui').style.display = "block";
             document.getElementById('admin-login-ui').style.display = "none";
-            
-            // જો ફાયરબેઝ તદ્દન ખાલી હોય તો ઓટોમેટિકલી શરૂ કરી દેશે
-            db.ref().once('value', (snapshot) => {
-                if(!snapshot.val()) {
-                    db.ref().set({ votes: { hitesh: 0, vishnu: 0 }, isResultDeclared: false });
-                }
-            });
-            
             window.scrollTo(0, document.body.scrollHeight);
-            alert("એડમિન કંટ્રોલ પેનલ ઓપન થઈ ગઈ છે! કૃપા કરીને પેજની નીચે જુઓ.");
         } else {
             alert("ખોટો પાસવર્ડ! ફરીથી પ્રયત્ન કરો.");
         }
@@ -164,15 +141,48 @@
 
     function submitVote(event) {
         event.preventDefault();
-        if (localStorage.getItem('vote_done') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
+        if (localStorage.getItem('vote_done_local') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
 
         const selected = document.querySelector('input[name="candidate"]:checked').value;
+        currentVotes[selected]++;
+        
+        localStorage.setItem('mandli_votes', JSON.stringify(currentVotes));
+        localStorage.setItem('vote_done_local', 'true');
+        
+        document.getElementById('voting-area').style.display = "none";
+        document.getElementById('success-message').style.display = "block";
+        updateDisplayData();
+    }
 
-        db.ref('votes/' + selected).transaction((count) => {
-            return (count || 0) + 1;
-        }, (error, committed) => {
-            if (committed) {
-                localStorage.setItem('vote_done', 'true');
-                document.getElementById('voting-area').style.display = "none";
-                document.getElementById('success-message').style.display = "block";
-            } else {
+    function modifyVote(from, to) {
+        if (currentVotes[from] > 0) {
+            currentVotes[from]--;
+            currentVotes[to]++;
+            localStorage.setItem('mandli_votes', JSON.stringify(currentVotes));
+            updateDisplayData();
+            alert("વોટ સફળતાપૂર્વક બદલવામાં આવ્યો છે!");
+        } else { alert("આ ઉમેદવાર પાસે વોટ નથી."); }
+    }
+
+    function declareFinalResult() {
+        if (confirm("પરિણામ જાહેર કરવું છે?")) {
+            resultFlag = true;
+            localStorage.setItem('mandli_result_declared', 'true');
+            updateDisplayData();
+        }
+    }
+
+    function resetWholeElection() {
+        if (confirm("શું તમે ચૂંટણી રીસેટ કરવા માંગો છો?")) {
+            localStorage.removeItem('mandli_votes');
+            localStorage.removeItem('mandli_result_declared');
+            localStorage.removeItem('vote_done_local');
+            location.reload();
+        }
+    }
+
+    // લોડ થતાં જ ડેટા બતાવો
+    updateDisplayData();
+</script>
+</body>
+</html>
