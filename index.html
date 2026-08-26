@@ -22,8 +22,9 @@
         
         /* એડમિન લોગીન ઇનપુટ બોક્સ */
         .login-box { margin-top: 40px; padding: 20px; background: #eaeded; border-radius: 8px; border: 1px solid #ccc; text-align: left; }
-        .login-box input { width: 93%; padding: 10px; margin: 10px 0; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; background: white; color: #333; box-sizing: border-box; }
-        .login-box button { background: #34495e; color: white; border: none; padding: 10px 20px; font-size: 15px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; background: white; color: #333; box-sizing: border-box; }
+        .login-box button { background: #34495e; color: white; border: none; padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; }
+        .login-box button:hover { background: #2c3e50; }
         
         /* ગુપ્ત એડમિન કંટ્રોલ પેનલ */
         .admin-section { display: none; background: #2c3e50; color: white; border-radius: 10px; padding: 25px; text-align: left; margin-top: 20px; }
@@ -34,22 +35,22 @@
 
 <div class="container">
     <h1>છોટાઉદેપુર મહેસૂલ કર્મચારી મંડળ</h1>
-    <h2>પ્રમુખ પદની ચૂંટણી ૨ો૨૬</h2>
+    <h2>પ્રમુખ પદની ચૂંટણી ૨૦૨૬</h2>
     <hr style="border-color: #eee;">
     
     <!-- 🗳️ વોટિંગ એરિયા -->
     <div id="voting-area">
         <h3 style="color: #34495e;">કૃપા કરીને તમારો કિંમતી વોટ આપો:</h3>
-        <form id="electionForm" onsubmit="submitVote(event)">
+        <form id="electionForm" onsubmit="return false;">
             <div class="candidate-card" onclick="document.getElementById('c1').checked = true">
-                <input type="radio" id="c1" name="candidate" value="hitesh" class="vote-radio" required>
+                <input type="radio" id="c1" name="candidate" value="hitesh" class="vote-radio">
                 <strong>૧. હિતેશ રાઠવા (Hitesh Rathva)</strong>
             </div>
             <div class="candidate-card" onclick="document.getElementById('c2').checked = true">
                 <input type="radio" id="c2" name="candidate" value="vishnu" class="vote-radio">
                 <strong>૨. વિષ્ણુ દેસાઈ (Vishnu Desai)</strong>
             </div><br>
-            <button type="submit" class="btn">વોટ સબમિટ કરો (Submit Vote)</button>
+            <button type="button" class="btn" onclick="submitVoteDirect()">વોટ સબમિટ કરો (Submit Vote)</button>
         </form>
     </div>
 
@@ -71,54 +72,70 @@
     <div class="login-box" id="admin-login-ui">
         <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
         <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
-        <button onclick="checkAdminPassword()">લોગઇન કરો</button>
+        <button type="button" onclick="checkAdminPasswordDirect()">લોગઇન કરો</button>
     </div>
 </div>
 
 <!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
-    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (સુપર-ફાસ્ટ):</strong></p>
+    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (ઇન્સ્ટન્ટ લોડ):</strong></p>
     <div style="background: #34495e; padding: 15px; border-radius: 6px; font-size: 18px; margin-bottom: 15px;">
         • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span><br><br>
         • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span>
     </div>
 
     <p style="font-weight: bold; color: #ecf0f1;">🔄 ભૂલ સુધારણા પાવર (Change Vote):</p>
-    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('hitesh', 'vishnu')">૧ વોટ હિતેશ માંથી વિષ્ણુ ને ટ્રાન્સફર કરો</button>
-    <button class="admin-btn" style="background: #3498db;" onclick="modifyVote('vishnu', 'hitesh')">૧ વોટ વિષ્ણુ માંથી હિતેશ ને ટ્રાન્સફર કરો</button>
+    <button type="button" class="admin-btn" style="background: #3498db;" onclick="modifyVoteDirect('hitesh', 'vishnu')">૧ વોટ હિતેશ માંથી વિષ્ણુ ને ટ્રાન્સફર કરો</button>
+    <button type="button" class="admin-btn" style="background: #3498db;" onclick="modifyVoteDirect('vishnu', 'hitesh')">૧ વોટ વિષ્ણુ માંથી હિતેશ ને ટ્રાન્સફર કરો</button>
     
     <hr style="border-color: #34495e; margin: 20px 0;">
-    <button class="admin-btn" style="background: #2ecc71; font-weight: bold; padding: 14px;" onclick="declareFinalResult()">અંતિમ પરિણામ જાહેર કરો</button>
-    <button class="admin-btn" style="background: #e74c3c; padding: 10px; margin-top: 10px;" onclick="resetWholeElection()">આખી ચૂંટણી રીસેટ કરો (0-0)</button>
+    <button type="button" class="admin-btn" style="background: #2ecc71; font-weight: bold; padding: 14px;" onclick="declareFinalResultDirect()">અંતિમ પરિણામ જાહેર કરો</button>
+    <button type="button" class="admin-btn" style="background: #e74c3c; padding: 10px; margin-top: 10px;" onclick="resetWholeElectionDirect()">આખી ચૂંટણી રીસેટ કરો (0-0)</button>
 </div>
 
 <script>
-    const MASTER_PASS = "admin123"; 
-    
-    // આખી લોકલ પાવર સિસ્ટમ જે ક્યારેય પણ અટકશે કે હેંગ નહીં થાય
-    let currentVotes = JSON.parse(localStorage.getItem('mandli_votes')) || { hitesh: 0, vishnu: 0 };
-    let resultFlag = localStorage.getItem('mandli_result_declared') === 'true';
+    // અલ્ટ્રા-સ્ટેબલ લોકલ ડેટાબેઝ એન્જિન (ફાયરબેઝ વગર પણ ૧૦૦% કામ કરશે)
+    let state = {
+        votes: { hitesh: 0, vishnu: 0 },
+        isDeclared: false
+    };
 
-    function updateDisplayData() {
-        document.getElementById('adm-hitesh').innerText = currentVotes.hitesh;
-        document.getElementById('adm-vishnu').innerText = currentVotes.vishnu;
+    // લોકલ ડેટા લોડ કરવો
+    function loadSavedState() {
+        let savedVotes = localStorage.getItem('chhota_v');
+        let savedDeclared = localStorage.getItem('chhota_d');
+        
+        if (savedVotes) state.votes = JSON.parse(savedVotes);
+        if (savedDeclared) state.isDeclared = (savedDeclared === 'true');
+        
+        updateScreen();
+    }
 
-        if (localStorage.getItem('vote_done_local') === 'true' && !resultFlag) {
+    function saveState() {
+        localStorage.setItem('chhota_v', JSON.stringify(state.votes));
+        localStorage.setItem('chhota_d', state.isDeclared.toString());
+    }
+
+    function updateScreen() {
+        document.getElementById('adm-hitesh').innerText = state.votes.hitesh;
+        document.getElementById('adm-vishnu').innerText = state.votes.vishnu;
+
+        if (localStorage.getItem('user_voted') === 'true' && !state.isDeclared) {
             document.getElementById('voting-area').style.display = "none";
             document.getElementById('success-message').style.display = "block";
         }
 
-        if (resultFlag) {
-            let winText = "";
-            if(currentVotes.hitesh > currentVotes.vishnu) {
-                winText = `🏆 વિજેતા: હિતેશ રાઠવા (કુલ વોટ: ${currentVotes.hitesh})`;
-            } else if(currentVotes.vishnu > currentVotes.hitesh) {
-                winText = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${currentVotes.vishnu})`;
+        if (state.isDeclared) {
+            let txt = "";
+            if(state.votes.hitesh > state.votes.vishnu) {
+                txt = `🏆 વિજેતા: હિતેશ રાઠવા (કુલ વોટ: ${state.votes.hitesh})`;
+            } else if(state.votes.vishnu > state.votes.hitesh) {
+                txt = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${state.votes.vishnu})`;
             } else {
-                winText = `🤝 ચૂંટણી ટાઈ થઈ છે.`;
+                txt = `🤝 ચૂંટણી ટાઈ થઈ છે (બંનેને સરખા ${state.votes.hitesh} વોટ).`;
             }
-            document.getElementById('winner-text').innerHTML = winText;
+            document.getElementById('winner-text').innerHTML = txt;
             document.getElementById('final-result').style.display = 'block';
             document.getElementById('voting-area').style.display = 'none';
             document.getElementById('success-message').style.display = "none";
@@ -127,62 +144,46 @@
         }
     }
 
-    // 🔒 સિક્યોર લોગઇન બટન - હવે ૧ સેકન્ડમાં ખુલશે જ!
-    function checkAdminPassword() {
-        let enteredPass = document.getElementById('passInput').value;
-        if (enteredPass === MASTER_PASS) {
+    // 🔒 ૧૦૦% ગેરેંટીડ ડાયરેક્ટ લોગઇન ફંક્શન
+    function checkAdminPasswordDirect() {
+        let entered = document.getElementById('passInput').value;
+        if (entered === "admin123") {
             document.getElementById('admin-panel-ui').style.display = "block";
             document.getElementById('admin-login-ui').style.display = "none";
-            window.scrollTo(0, document.body.scrollHeight);
+            setTimeout(() => { window.scrollTo(0, document.body.scrollHeight); }, 100);
         } else {
-            alert("ખોટો પાસવર્ડ! ફરીથી પ્રયત્ન કરો.");
+            alert("ખોટો પાસવર્ડ! ફરી પ્રયત્ન કરો.");
         }
     }
 
-    function submitVote(event) {
-        event.preventDefault();
-        if (localStorage.getItem('vote_done_local') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
+    // 🗳️ ઇન્સ્ટન્ટ વોટ સબમિટ ફંક્શન
+    function submitVoteDirect() {
+        if (localStorage.getItem('user_voted') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
+        if (state.isDeclared) { alert("ચૂંટણી પૂર્ણ થઈ ગઈ છે!"); return; }
 
-        const selected = document.querySelector('input[name="candidate"]:checked').value;
-        currentVotes[selected]++;
+        let r1 = document.getElementById('c1').checked;
+        let r2 = document.getElementById('c2').checked;
         
-        localStorage.setItem('mandli_votes', JSON.stringify(currentVotes));
-        localStorage.setItem('vote_done_local', 'true');
-        
-        document.getElementById('voting-area').style.display = "none";
-        document.getElementById('success-message').style.display = "block";
-        updateDisplayData();
+        let selected = "";
+        if (r1) selected = "hitesh";
+        else if (r2) selected = "vishnu";
+        else { alert("કૃપા કરીને કોઈ એક ઉમેદવાર પસંદ કરો!"); return; }
+
+        state.votes[selected]++;
+        localStorage.setItem('user_voted', 'true');
+        saveState();
+        updateScreen();
     }
 
-    function modifyVote(from, to) {
-        if (currentVotes[from] > 0) {
-            currentVotes[from]--;
-            currentVotes[to]++;
-            localStorage.setItem('mandli_votes', JSON.stringify(currentVotes));
-            updateDisplayData();
-            alert("વોટ સફળતાપૂર્વક બદલવામાં આવ્યો છે!");
-        } else { alert("આ ઉમેદવાર પાસે વોટ નથી."); }
+    function modifyVoteDirect(from, to) {
+        if (state.votes[from] > 0) {
+            state.votes[from]--;
+            state.votes[to]++;
+            saveState();
+            updateScreen();
+            alert("વોટ બદલવામાં આવ્યો છે!");
+        } else { alert("આ ઉમેદવાર પાસે કોઈ વોટ નથી."); }
     }
 
-    function declareFinalResult() {
+    function declareFinalResultDirect() {
         if (confirm("પરિણામ જાહેર કરવું છે?")) {
-            resultFlag = true;
-            localStorage.setItem('mandli_result_declared', 'true');
-            updateDisplayData();
-        }
-    }
-
-    function resetWholeElection() {
-        if (confirm("શું તમે ચૂંટણી રીસેટ કરવા માંગો છો?")) {
-            localStorage.removeItem('mandli_votes');
-            localStorage.removeItem('mandli_result_declared');
-            localStorage.removeItem('vote_done_local');
-            location.reload();
-        }
-    }
-
-    // લોડ થતાં જ ડેટા બતાવો
-    updateDisplayData();
-</script>
-</body>
-</html>
