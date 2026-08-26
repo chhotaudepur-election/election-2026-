@@ -16,9 +16,9 @@
         .result-box { margin-top: 20px; padding: 20px; background: #d4edda; color: #155724; border-radius: 8px; display: none; font-size: 22px; font-weight: bold; }
         .vote-radio { transform: scale(1.6); margin-right: 15px; vertical-align: middle; }
         
-        /* વોટ સબમિટ થયા પછીનું ગ્રીન ડન બોક્સ */
-        .success-box { display: none; padding: 30px 10px; background: #ffffff; text-align: center; }
-        .checkmark { font-size: 85px; color: #2ecc71; margin-bottom: 15px; }
+        /* વોટ સબમિટ થયા પછીનું ગ્રીન ચેકમાર્ક બોક્સ */
+        .success-box { display: none; padding: 40px 10px; background: #ffffff; text-align: center; }
+        .checkmark { font-size: 90px; color: #2ecc71; margin-bottom: 15px; line-height: 1; }
         
         /* એડમિન લોગીન ઇનપુટ બોક્સ */
         .login-box { margin-top: 40px; padding: 20px; background: #eaeded; border-radius: 8px; border: 1px solid #ccc; text-align: left; }
@@ -35,30 +35,32 @@
 
 <div class="container">
     <h1>છોટાઉદેપુર મહેસૂલ કર્મચારી મંડળ</h1>
-    <h2>પ્રમુખ પદની ચૂંટણી ૨૦૨૬</h2>
+    <h2>પ્રમુખ પદની ચૂંટણી ૨૦安全</h2>
     <hr style="border-color: #eee;">
     
     <!-- 🗳️ વોટિંગ એરિયા -->
     <div id="voting-area">
         <h3 style="color: #34495e;">કૃપા કરીને તમારો કિંમતી વોટ આપો:</h3>
-        <form id="electionForm" onsubmit="return false;">
-            <div class="candidate-card" onclick="document.getElementById('c1').checked = true">
-                <input type="radio" id="c1" name="candidate" value="hitesh" class="vote-radio">
-                <strong>૧. હિતેશ રાઠવા (Hitesh Rathva)</strong>
-            </div>
-            <div class="candidate-card" onclick="document.getElementById('c2').checked = true">
-                <input type="radio" id="c2" name="candidate" value="vishnu" class="vote-radio">
-                <strong>૨. વિષ્ણુ દેસાઈ (Vishnu Desai)</strong>
-            </div><br>
-            <button type="button" class="btn" onclick="submitVoteDirect()">વોટ સબમિટ કરો (Submit Vote)</button>
-        </form>
+        
+        <!-- બ્રાઉઝર રીફ્રેશ અટકાવવા માટે form ટેગ માંથી onsubmit અને action કાઢી નાખ્યા છે -->
+        <div class="candidate-card" onclick="document.getElementById('c1').checked = true">
+            <input type="radio" id="c1" name="candidate" value="hitesh" class="vote-radio">
+            <strong>૧. હિતેશ રાઠવા (Hitesh Rathva)</strong>
+        </div>
+        
+        <div class="candidate-card" onclick="document.getElementById('c2').checked = true">
+            <input type="radio" id="c2" name="candidate" value="vishnu" class="vote-radio">
+            <strong>૨. વિષ્ણુ દેસાઈ (Vishnu Desai)</strong>
+        </div><br>
+        
+        <button type="button" class="btn" onclick="submitVoteDirect()">વોટ સબમિટ કરો (Submit Vote)</button>
     </div>
 
-    <!-- ✅ વોટ સબમિટ થયા પછીનું ગ્રીન ચેકમાર્ક નિશાન -->
+    <!-- ✅ વોટ સબમિટ થયા પછી દેખાતું મોટું ગ્રીન નિશાન -->
     <div id="success-message" class="success-box">
         <div class="checkmark">✅</div>
-        <h2 style="color: #2ecc71; margin-top: 0;">વોટ સફળતાપૂર્વક સબમિટ થઈ ગયો છે!</h2>
-        <p style="color: #555; font-size: 17px;">ચૂંટણી પ્રક્રિયામાં ભાગ લેવા બદલ આપનો ખૂબ ખૂબ ધન્યવાદ.</p>
+        <h2 style="color: #2ecc71; margin-top: 0; font-size: 24px;">વોટ સફળતાપૂર્વક સબમિટ થઈ ગયો છે!</h2>
+        <p style="color: #555; font-size: 18px; margin-bottom: 0;">ચૂંટણી પ્રક્રિયામાં ભાગ લેવા બદલ આપનો ખૂબ ખૂબ ધન્યવાદ.</p>
     </div>
 
     <!-- 🏆 ફાઇનલ પરિણામ બોક્સ -->
@@ -68,7 +70,7 @@
         <div id="winner-text"></div>
     </div>
 
-    <!-- 🔒 એડમિન લોગીન ફોર્મ (વોટર્સ ની નીચે) -->
+    <!-- 🔒 એડમિન લોગીન ફોર્મ -->
     <div class="login-box" id="admin-login-ui">
         <label style="font-weight: bold; color: #2c3e50; font-size: 16px;">⚙️ એડમિન પેનલ લોગઇન:</label>
         <input type="password" id="passInput" placeholder="અહીં એડમિન પાસવર્ડ નાખો">
@@ -79,7 +81,7 @@
 <!-- 🛠️ ગુપ્ત એડમિન કંટ્રોલ પેનલ -->
 <div class="container admin-section" id="admin-panel-ui">
     <h3 style="color: #f1c40f; margin-top: 0; border-bottom: 1px solid #34495e; padding-bottom: 10px; text-align: center;">⚙️ એડમિન કંટ્રોલ પેનલ (લાઈવ સ્ટેટસ)</h3>
-    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર:</strong></p>
+    <p><strong>📊 લાઇવ વોટિંગ કાઉન્ટર (ઇન્સ્ટન્ટ):</strong></p>
     <div style="background: #34495e; padding: 15px; border-radius: 6px; font-size: 18px; margin-bottom: 15px;">
         • હિતેશ રાઠવા વોટ: <span id="adm-hitesh" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span><br><br>
         • વિષ્ણુ દેસાઈ વોટ: <span id="adm-vishnu" style="color: #f1c40f; font-weight: bold; font-size: 24px;">0</span>
@@ -95,12 +97,13 @@
 </div>
 
 <script>
-    // અલ્ટ્રા-સ્ટેબલ લોકલ સ્ટોરેજ એન્જિન
+    // અલ્ટ્રા-સ્ટેબલ લોકલ ડેટા મોડલ
     let state = {
         votes: { hitesh: 0, vishnu: 0 },
         isDeclared: false
     };
 
+    // લોકલ ડેટા લોડ કરવો
     function loadSavedState() {
         let savedVotes = localStorage.getItem('chhota_v');
         let savedDeclared = localStorage.getItem('chhota_d');
@@ -132,7 +135,7 @@
             } else if(state.votes.vishnu > state.votes.hitesh) {
                 txt = `🏆 વિજેતા: વિષ્ણુ દેસાઈ (કુલ વોટ: ${state.votes.vishnu})`;
             } else {
-                txt = `🤝 ચૂંટણી ટાઈ થઈ છે (બંનેને સરખા ${state.votes.hitesh} વોટ).`;
+                txt = `🤝 ચૂંટણી ટાઈ થઈ છે (બંને ઉમેદવારોને સરખા ${state.votes.hitesh} વોટ મળ્યા છે).`;
             }
             document.getElementById('winner-text').innerHTML = txt;
             document.getElementById('final-result').style.display = 'block';
@@ -143,22 +146,23 @@
         }
     }
 
-    // 🔒 ઇન્સ્ટન્ટ કંટ્રોલ પેનલ ઓપનર
+    // 🔒 ૧૦０% ઇન્સ્ટન્ટ લોગઇન પાવર બટન
     function checkAdminPasswordDirect() {
         let entered = document.getElementById('passInput').value;
         if (entered === "admin123") {
             document.getElementById('admin-panel-ui').style.display = "block";
             document.getElementById('admin-login-ui').style.display = "none";
-            setTimeout(() => { window.scrollTo(0, document.body.scrollHeight); }, 100);
+            // ઇન્સ્ટન્ટ સ્મૂધ સ્ક્રોલ ડાઉન
+            setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 50);
         } else {
-            alert("ખોટો પાસવર્ડ! ફરી પ્રયત્ન કરો.");
+            alert("ખોટો પાસવર્ડ! કૃપા કરીને ફરી પ્રયત્ન કરો.");
         }
     }
 
-    // 🗳️ ઇન્સ્ટન્ટ વોટ સબમિટ અને ✅ પ્રદર્શન
+    // 🗳️ ડાયરેક્ટ વોટ સબમિટ અને ✅ એનિમેશન
     function submitVoteDirect() {
-        if (localStorage.getItem('user_voted') === 'true') { alert("તમે ઓલરેડી વોટ આપી દીધો છે!"); return; }
-        if (state.isDeclared) { alert("ચૂંટણી પૂર્ણ થઈ ગઈ છે!"); return; }
+        if (localStorage.getItem('user_voted') === 'true') { alert("તમે આ ફોનમાંથી એકવાર વોટ આપી દીધો છે!"); return; }
+        if (state.isDeclared) { alert("ચૂંટણી પૂર્ણ થઈ ગઈ છે અને પરિણામ જાહેર થઈ ચૂક્યું છે!"); return; }
 
         let r1 = document.getElementById('c1').checked;
         let r2 = document.getElementById('c2').checked;
@@ -181,10 +185,3 @@
             saveState();
             updateScreen();
             alert("વોટ સફળતાપૂર્વક બદલવામાં આવ્યો છે!");
-        } else { alert("આ ઉમેદવાર પાસે કોઈ વોટ નથી."); }
-    }
-
-    function declareFinalResultDirect() {
-        if (confirm("શું તમે પરિણામ જાહેર કરવા માંગો છો? આનાથી વોટિંગ કાયમ માટે બંધ થઈ જશે.")) {
-            state.isDeclared = true;
-            saveState();
